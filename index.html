@@ -1,919 +1,534 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DELANCE.AI | Open-Source Platform for Delegate Freelancing</title>
-  <meta name="description" content="DELANCE.AI is an open-source platform concept for independent professionals to package their expertise into reusable AI capabilities.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --void: #05060a;
-      --deep: #0a0d16;
-      --line: rgba(255, 255, 255, 0.09);
-      --text: #eef2ff;
-      --text-soft: #9aa3bf;
-      --cyan: #22d3ee;
-      --violet: #8b5cf6;
-      --magenta: #e879f9;
-      --lime: #a3e635;
-      --grad: linear-gradient(120deg, #22d3ee 0%, #8b5cf6 50%, #e879f9 100%);
-      --radius: 20px;
-      --max: 1200px;
-      --display: "Space Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Dv.Haresh Foundation - Portal</title>
+<style>
+  /* --- SWISS STYLE VARIABLES (BLUE PALETTE) --- */
+  :root {
+    --bg-color: #0A2B56;
+    --text-color: #FFFFFF;
+    --error-color: #FF3B30;
+    --accent-color: #FFFFFF;
+  }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; scroll-padding-top: 90px; background: var(--void); }
-    body {
-      font-family: var(--display);
-      background: var(--void);
-      color: var(--text);
-      line-height: 1.6;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-    a { color: inherit; }
-    img, svg { max-width: 100%; display: block; }
-    ::selection { background: var(--violet); color: #fff; }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-    .container { width: min(100% - 3rem, var(--max)); margin-inline: auto; position: relative; z-index: 2; }
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    overflow: hidden;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
 
-    /* ---------- Background layers ---------- */
-    #neural {
-      position: fixed; inset: 0; width: 100%; height: 100%;
-      z-index: 0; pointer-events: none; opacity: 0.9;
-    }
-    .grid-overlay {
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 64px 64px;
-      mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
-      -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
-    }
-    .cursor-glow {
-      position: fixed; width: 420px; height: 420px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(139,92,246,0.18), transparent 60%);
-      transform: translate(-50%, -50%); pointer-events: none; z-index: 1;
-      left: -999px; top: -999px; transition: opacity 0.4s; mix-blend-mode: screen;
-    }
-    .scroll-progress {
-      position: fixed; top: 0; left: 0; height: 2px; width: 100%;
-      background: var(--grad); transform-origin: 0 50%; transform: scaleX(0);
-      z-index: 100; box-shadow: 0 0 12px rgba(139,92,246,0.8);
-    }
+  /* --- TOP NOTICE --- */
+  .global-notice {
+    position: absolute;
+    top: 4vh;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    z-index: 100;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
 
-    /* ---------- Typography ---------- */
-    .eyebrow {
-      display: inline-flex; align-items: center; gap: 0.6rem;
-      font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.14em;
-      text-transform: uppercase; color: var(--cyan); margin-bottom: 1.25rem;
-    }
-    .eyebrow::before {
-      content: ""; width: 28px; height: 1px; background: var(--cyan); box-shadow: 0 0 8px var(--cyan);
-    }
-    h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; }
-    h1 { font-size: clamp(2.8rem, 7.2vw, 5.8rem); margin-bottom: 1.75rem; }
-    h2 { font-size: clamp(2.1rem, 4.8vw, 3.6rem); margin-bottom: 1.25rem; }
-    h3 { font-size: clamp(1.25rem, 2.2vw, 1.5rem); margin-bottom: 0.6rem; letter-spacing: -0.01em; }
-    p { color: var(--text-soft); margin-bottom: 1.1rem; max-width: 64ch; font-size: 1.02rem; }
-    .lead { font-size: clamp(1.1rem, 1.8vw, 1.3rem); color: var(--text); }
-    .strong { color: var(--text); font-weight: 500; }
-    .gradient-text {
-      background: var(--grad); background-size: 200% auto;
-      -webkit-background-clip: text; background-clip: text; color: transparent;
-      animation: shimmer 6s linear infinite;
-    }
-    @keyframes shimmer { to { background-position: 200% center; } }
+  /* --- LAYOUT & TYPOGRAPHY --- */
+  .step {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100dvh;
+    padding: 8vh 6vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
 
-    /* ---------- Buttons ---------- */
-    .btn-group { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2.5rem; }
-    .btn {
-      position: relative; display: inline-flex; align-items: center; gap: 0.6rem;
-      padding: 1rem 1.7rem; border-radius: 14px;
-      font-family: var(--display); font-weight: 500; font-size: 1rem;
-      text-decoration: none; cursor: pointer;
-      border: 1px solid var(--line); color: var(--text);
-      background: rgba(255,255,255,0.03); backdrop-filter: blur(8px);
-      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
-    }
-    .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.07); }
-    .btn-primary {
-      border: none; background: var(--grad); background-size: 200% auto;
-      color: #05060a; font-weight: 700;
-      box-shadow: 0 10px 40px -10px rgba(139,92,246,0.7);
-    }
-    .btn-primary:hover { background-position: 100% center; box-shadow: 0 16px 50px -8px rgba(34,211,238,0.6); color: #05060a; }
-    .btn-primary::after { content: "→"; transition: transform 0.25s ease; }
-    .btn-primary:hover::after { transform: translateX(4px); }
-    .btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
-    :focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; border-radius: 6px; }
+  .step.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
 
-    /* ---------- Header ---------- */
-    .site-header {
-      position: fixed; inset: 0 0 auto 0; z-index: 60;
-      transition: background 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease;
-      border-bottom: 1px solid transparent;
-    }
-    .site-header.scrolled {
-      background: rgba(5, 6, 10, 0.7);
-      backdrop-filter: blur(16px) saturate(140%);
-      -webkit-backdrop-filter: blur(16px) saturate(140%);
-      border-bottom-color: var(--line);
-    }
-    .nav { display: flex; align-items: center; justify-content: space-between; height: 76px; }
-    .logo {
-      font-family: var(--display); font-weight: 700; font-size: 1.35rem;
-      letter-spacing: -0.02em; text-decoration: none;
-      display: inline-flex; align-items: center; gap: 0.6rem;
-    }
-    .logo-mark {
-      width: 30px; height: 30px; border-radius: 9px; background: var(--grad);
-      position: relative; box-shadow: 0 0 24px rgba(139,92,246,0.6);
-    }
-    .logo-mark::after {
-      content: ""; position: absolute; inset: 8px; border-radius: 4px; background: var(--void);
-    }
-    .logo .ai { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a {
-      text-decoration: none; font-size: 0.93rem; color: var(--text-soft);
-      position: relative; transition: color 0.25s;
-    }
-    .nav-links a::after {
-      content: ""; position: absolute; left: 0; bottom: -6px;
-      width: 0; height: 1px; background: var(--grad); transition: width 0.3s ease;
-    }
-    .nav-links a:hover, .nav-links a.active { color: var(--text); }
-    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
-    .nav-cta { font-size: 0.9rem !important; padding: 0.6rem 1.1rem !important; }
-    .nav-cta::after { display: none !important; }
-    .nav-toggle {
-      display: none; background: none; border: 1px solid var(--line); border-radius: 10px;
-      cursor: pointer; width: 44px; height: 44px; position: relative;
-    }
-    .nav-toggle span {
-      position: absolute; left: 12px; right: 12px; height: 2px; background: var(--text);
-      transition: transform 0.3s ease, opacity 0.3s ease;
-    }
-    .nav-toggle span:nth-child(1) { top: 14px; }
-    .nav-toggle span:nth-child(2) { top: 21px; }
-    .nav-toggle span:nth-child(3) { top: 28px; }
-    .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-    .nav-toggle.open span:nth-child(2) { opacity: 0; }
-    .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .step-header {
+    margin-bottom: 4vh;
+    width: 100%;
+  }
 
-    /* ---------- Hero ---------- */
-    .hero { min-height: 100vh; display: flex; align-items: center; padding: 9rem 0 6rem; position: relative; }
-    .hero-grid { display: grid; gap: 3rem; align-items: center; grid-template-columns: 1fr; }
-    @media (min-width: 960px) { .hero-grid { grid-template-columns: 1.15fr 0.85fr; } }
-    .status-pill {
-      display: inline-flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
-      padding: 0.45rem 1rem; border-radius: 999px;
-      background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.3);
-      color: var(--cyan); font-family: var(--mono); font-size: 0.78rem;
-      letter-spacing: 0.04em; margin-bottom: 2rem;
-    }
-    .pill-sep { color: var(--text-soft); }
-    .pulse {
-      width: 8px; height: 8px; border-radius: 50%; background: var(--lime);
-      box-shadow: 0 0 0 0 rgba(163,230,53,0.6); animation: pulse 2s infinite; flex-shrink: 0;
-    }
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(163,230,53,0.6); }
-      70% { box-shadow: 0 0 0 12px rgba(163,230,53,0); }
-      100% { box-shadow: 0 0 0 0 rgba(163,230,53,0); }
-    }
-    .hero-tagline { font-size: clamp(1.2rem, 2.2vw, 1.6rem); font-weight: 500; color: var(--text); margin-bottom: 1.5rem; }
-    .hero-note {
-      margin-top: 2.5rem; font-family: var(--mono); font-size: 0.82rem; color: var(--text-soft);
-      padding-left: 1rem; border-left: 2px solid var(--violet); max-width: 60ch;
-    }
+  .step-indicator {
+    font-size: 1.2rem;
+    font-weight: 700;
+    opacity: 0.5;
+    margin-bottom: 2vh;
+    letter-spacing: 0.1em;
+  }
 
-    /* Repo chip */
-    .repo-chip {
-      display: inline-flex; align-items: center; gap: 0.75rem; margin-top: 2rem;
-      padding: 0.6rem 1rem; border-radius: 12px;
-      background: rgba(10,13,22,0.8); border: 1px solid var(--line);
-      font-family: var(--mono); font-size: 0.82rem; color: var(--text-soft);
-    }
-    .repo-chip strong { color: var(--text); font-weight: 500; }
-    .repo-chip .dot { color: var(--lime); }
+  h1 {
+    font-size: clamp(3rem, 12vw, 5rem);
+    font-weight: 800;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: -0.03em;
+    margin-bottom: 4vh;
+  }
 
-    /* Orbital core */
-    .core-wrap { position: relative; width: min(440px, 90vw); aspect-ratio: 1; margin: 0 auto; }
-    .core {
-      position: absolute; inset: 36%; border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #fff 0%, var(--cyan) 18%, var(--violet) 55%, transparent 72%);
-      filter: blur(1px); animation: breathe 4s ease-in-out infinite;
-      box-shadow: 0 0 80px rgba(139,92,246,0.7), 0 0 160px rgba(34,211,238,0.3);
-    }
-    @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
-    .orbit { position: absolute; inset: 0; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); }
-    .orbit::before {
-      content: ""; position: absolute; top: -4px; left: 50%; width: 8px; height: 8px; margin-left: -4px;
-      border-radius: 50%; background: var(--cyan); box-shadow: 0 0 14px var(--cyan);
-    }
-    .orbit.o1 { inset: 8%; animation: spin 14s linear infinite; }
-    .orbit.o2 { inset: 22%; border-style: dashed; animation: spin 22s linear infinite reverse; }
-    .orbit.o2::before { background: var(--magenta); box-shadow: 0 0 14px var(--magenta); }
-    .orbit.o3 { inset: -4%; animation: spin 30s linear infinite; border-color: rgba(139,92,246,0.25); }
-    .orbit.o3::before { background: var(--lime); box-shadow: 0 0 14px var(--lime); top: 50%; left: -4px; margin: -4px 0 0 0; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .core-label {
-      position: absolute; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--text-soft); background: rgba(10,13,22,0.8);
-      border: 1px solid var(--line); padding: 0.35rem 0.7rem; border-radius: 8px; backdrop-filter: blur(6px);
-    }
-    .core-label.l1 { top: 4%; right: -2%; }
-    .core-label.l2 { bottom: 10%; left: -4%; }
-    .core-label.l3 { bottom: -2%; right: 8%; }
+  /* --- FORMS & INPUTS --- */
+  .form-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+    margin-bottom: 4vh;
+    overflow-y: auto;
+    max-height: 60vh;
+    width: 100%;
+    max-width: 400px;
+  }
 
-    /* ---------- Marquee ---------- */
-    .marquee { border-block: 1px solid var(--line); background: rgba(255,255,255,0.02); overflow: hidden; position: relative; z-index: 2; }
-    .marquee-track { display: flex; width: max-content; animation: marquee 30s linear infinite; }
-    .marquee-track span {
-      font-family: var(--display); font-size: clamp(1.2rem, 2.5vw, 1.8rem); font-weight: 500;
-      padding: 1.1rem 2rem; white-space: nowrap; color: var(--text-soft);
-    }
-    .marquee-track span::after { content: "✦"; margin-left: 4rem; color: var(--violet); }
-    @keyframes marquee { to { transform: translateX(-50%); } }
+  .input-group {
+    display: flex;
+    flex-direction: column;
+  }
 
-    /* ---------- Sections ---------- */
-    section { padding: clamp(5rem, 11vw, 9rem) 0; position: relative; }
-    .section-head { max-width: 780px; margin-bottom: 4rem; }
-    .split { display: grid; gap: 4rem; align-items: center; grid-template-columns: 1fr; }
-    @media (min-width: 900px) { .split { grid-template-columns: 1fr 1fr; } }
+  .input-group label {
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    opacity: 0.8;
+  }
 
-    .glass {
-      background: linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01));
-      border: 1px solid var(--line); border-radius: var(--radius);
-      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-      position: relative; overflow: hidden;
-    }
-    .pull-quote { padding: clamp(2rem, 4vw, 3.5rem); font-size: clamp(1.5rem, 2.8vw, 2.1rem); line-height: 1.3; font-weight: 500; color: var(--text); }
-    .pull-quote .accent { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 700; }
-    .pull-quote p { font-size: inherit; color: var(--text-soft); margin-top: 1.25rem; }
-    .pull-quote::before {
-      content: ""; position: absolute; top: -120px; right: -120px; width: 300px; height: 300px;
-      background: radial-gradient(circle, rgba(232,121,249,0.25), transparent 65%); pointer-events: none;
-    }
+  input, textarea {
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid rgba(255, 255, 255, 0.3);
+    color: var(--text-color);
+    font-size: 1.5rem;
+    padding: 12px 0;
+    font-weight: 500;
+    outline: none;
+    border-radius: 0;
+    text-align: center;
+    transition: border-color 0.3s ease;
+  }
 
-    /* Spotlight cards */
-    .grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-    .spot {
-      --mx: 50%; --my: 50%; position: relative; padding: 2.2rem; border-radius: var(--radius);
-      background: var(--deep); border: 1px solid var(--line); overflow: hidden;
-      transition: transform 0.35s ease, border-color 0.35s ease;
-    }
-    .spot::before {
-      content: ""; position: absolute; inset: 0;
-      background: radial-gradient(420px circle at var(--mx) var(--my), rgba(139,92,246,0.18), transparent 60%);
-      opacity: 0; transition: opacity 0.4s ease; pointer-events: none;
-    }
-    .spot:hover { transform: translateY(-4px); border-color: rgba(139,92,246,0.45); }
-    .spot:hover::before { opacity: 1; }
-    .spot > * { position: relative; }
-    .spot .num {
-      display: inline-block; font-family: var(--mono); font-size: 0.8rem; color: var(--cyan);
-      background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.25);
-      padding: 0.25rem 0.6rem; border-radius: 6px; margin-bottom: 1.5rem;
-    }
-    .spot p { margin: 0; font-size: 0.98rem; }
-    .planned-note { margin-top: 2.5rem; font-family: var(--mono); font-size: 0.82rem; color: var(--text-soft); }
+  input:focus, textarea:focus {
+    border-bottom: 3px solid var(--text-color);
+  }
 
-    /* Audience */
-    .audience-grid { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
-    @media (min-width: 900px) { .audience-grid { grid-template-columns: 1fr 1fr; } }
-    .panel { padding: clamp(2rem, 4vw, 3rem); }
-    .panel .tag {
-      display: inline-block; font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
-      text-transform: uppercase; padding: 0.35rem 0.8rem; border-radius: 999px; margin-bottom: 1.5rem;
-    }
-    .panel.creators .tag { color: var(--magenta); background: rgba(232,121,249,0.1); border: 1px solid rgba(232,121,249,0.3); }
-    .panel.businesses .tag { color: var(--lime); background: rgba(163,230,53,0.08); border: 1px solid rgba(163,230,53,0.3); }
-    .panel h2 { font-size: clamp(1.8rem, 3.2vw, 2.4rem); }
-    .checklist { list-style: none; margin: 1.75rem 0; }
-    .checklist li {
-      position: relative; padding: 0.7rem 0 0.7rem 2rem; color: var(--text-soft);
-      border-bottom: 1px solid var(--line);
-    }
-    .checklist li:last-child { border-bottom: none; }
-    .checklist li::before {
-      content: ""; position: absolute; left: 0; top: 50%; width: 8px; height: 8px; margin-top: -4px;
-      border-radius: 2px; background: var(--grad); box-shadow: 0 0 10px rgba(139,92,246,0.7);
-    }
-    .panel .closing { font-size: 1.1rem; font-weight: 600; color: var(--text); margin: 0; }
+  input::placeholder, textarea::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
 
-    /* Open source */
-    .oss-grid { display: grid; gap: 1.25rem; grid-template-columns: 1fr; margin-top: 3rem; }
-    @media (min-width: 680px) { .oss-grid { grid-template-columns: repeat(3, 1fr); } }
-    .oss-card {
-      padding: 2rem; border-radius: var(--radius); background: var(--deep);
-      border: 1px solid var(--line); transition: border-color 0.3s ease, transform 0.3s ease;
-    }
-    .oss-card:hover { border-color: rgba(163,230,53,0.4); transform: translateY(-3px); }
-    .oss-card .code {
-      font-family: var(--mono); font-size: 0.8rem; color: var(--lime);
-      margin-bottom: 1rem; display: block;
-    }
-    .oss-card p { margin: 0; font-size: 0.96rem; }
-    .terminal {
-      margin-top: 3rem; border-radius: var(--radius); background: #070910;
-      border: 1px solid var(--line); overflow: hidden;
-    }
-    .terminal-bar {
-      display: flex; gap: 0.45rem; padding: 0.8rem 1rem; border-bottom: 1px solid var(--line);
-    }
-    .terminal-bar i { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.15); }
-    .terminal pre {
-      padding: 1.5rem; font-family: var(--mono); font-size: 0.88rem; color: var(--text-soft);
-      overflow-x: auto; line-height: 1.8;
-    }
-    .terminal .prompt { color: var(--lime); }
-    .terminal .comment { color: #4b5470; }
-    .terminal .hl { color: var(--cyan); }
+  .error-msg {
+    color: var(--error-color);
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-top: 8px;
+    text-transform: uppercase;
+    display: none;
+  }
 
-    /* Collaboration */
-    .collab-stage { padding: clamp(2rem, 5vw, 4rem) clamp(1.25rem, 4vw, 3rem); text-align: center; }
-    .collab-stage::before {
-      content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1px;
-      background: linear-gradient(120deg, rgba(34,211,238,0.5), rgba(139,92,246,0.5), rgba(232,121,249,0.5));
-      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
-    }
-    .collab-visual { display: flex; justify-content: center; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin: 2.5rem 0 3rem; }
-    .node {
-      padding: 0.9rem 1.3rem; border-radius: 14px; background: rgba(10,13,22,0.8);
-      border: 1px solid var(--line); font-size: 0.95rem; font-weight: 500; color: var(--text);
-      animation: float 6s ease-in-out infinite;
-    }
-    .node:nth-child(3) { animation-delay: -2s; }
-    .node:nth-child(5) { animation-delay: -4s; }
-    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-    .node.result {
-      background: var(--grad); color: #05060a; font-weight: 700; border: none;
-      animation: none; box-shadow: 0 0 40px rgba(139,92,246,0.5);
-    }
-    .op { font-family: var(--mono); font-size: 1.4rem; color: var(--cyan); }
-    .collab-copy { max-width: 760px; margin: 0 auto; text-align: left; }
+  /* --- STAR RATING --- */
+  .star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    gap: 12px;
+  }
 
-    /* Ownership */
-    .principles { display: grid; gap: 1.25rem; grid-template-columns: 1fr; margin-top: 3rem; }
-    @media (min-width: 680px) { .principles { grid-template-columns: 1fr 1fr; } }
-    .principle {
-      padding: 2rem; border-radius: var(--radius); background: var(--deep); border: 1px solid var(--line);
-      position: relative; overflow: hidden; transition: border-color 0.3s ease, transform 0.3s ease;
-    }
-    .principle:hover { border-color: rgba(34,211,238,0.4); transform: translateY(-3px); }
-    .principle .idx {
-      font-family: var(--mono); font-size: 3.2rem; font-weight: 500; line-height: 1;
-      background: var(--grad); -webkit-background-clip: text; background-clip: text;
-      color: transparent; opacity: 0.35; position: absolute; top: 1.25rem; right: 1.5rem;
-    }
-    .principle h3 { font-size: 1.3rem; }
-    .principle p { margin: 0; font-size: 0.97rem; }
-    .planned-note.center { text-align: center; margin-top: 2.5rem; }
+  .star-rating input {
+    display: none;
+  }
 
-    /* Status / join */
-    .join-list { list-style: none; margin-top: 1.5rem; }
-    .join-list li {
-      display: flex; gap: 1rem; align-items: center; padding: 1.1rem 0;
-      border-bottom: 1px solid var(--line); color: var(--text-soft);
-      transition: color 0.3s, padding-left 0.3s;
-    }
-    .join-list li:first-child { border-top: 1px solid var(--line); }
-    .join-list li::before { content: "▸"; color: var(--violet); font-size: 1.1rem; transition: transform 0.3s; }
-    .join-list li:hover { color: var(--text); padding-left: 0.5rem; }
-    .join-list li:hover::before { transform: translateX(4px); color: var(--cyan); }
-    .status-tag {
-      display: inline-flex; align-items: center; gap: 0.6rem; font-family: var(--mono);
-      font-size: 0.8rem; color: var(--lime); margin-bottom: 1.5rem; letter-spacing: 0.06em;
-    }
+  .star-rating label {
+    font-size: 3.5rem;
+    color: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.1s ease;
+    opacity: 1;
+    margin: 0;
+  }
 
-    /* Final CTA */
-    .final { text-align: center; overflow: hidden; border-top: 1px solid var(--line); }
-    .final::before {
-      content: ""; position: absolute; left: 50%; top: 50%;
-      width: min(900px, 140vw); height: min(900px, 140vw); transform: translate(-50%, -50%);
-      background: radial-gradient(circle, rgba(139,92,246,0.25), rgba(34,211,238,0.08) 40%, transparent 70%);
-      pointer-events: none; z-index: -1; animation: breathe 8s ease-in-out infinite;
-    }
-    .final .section-head { margin-inline: auto; }
-    .final p { margin-inline: auto; }
-    .final .btn-group { justify-content: center; }
-    .final h2 { font-size: clamp(2.4rem, 6vw, 4.6rem); }
+  .star-rating label:active {
+    transform: scale(0.85);
+  }
 
-    /* Footer */
-    footer {
-      padding: 4rem 0 2.5rem; border-top: 1px solid var(--line); position: relative; z-index: 2;
-      background: rgba(5,6,10,0.6); backdrop-filter: blur(8px);
-    }
-    .footer-top { display: flex; flex-wrap: wrap; gap: 2.5rem; justify-content: space-between; align-items: flex-start; margin-bottom: 3rem; }
-    .footer-top p { margin: 0.4rem 0 0; font-size: 0.92rem; }
-    .footer-links { display: flex; gap: 2rem; flex-wrap: wrap; list-style: none; }
-    .footer-links a { text-decoration: none; color: var(--text-soft); transition: color 0.25s; }
-    .footer-links a:hover { color: var(--cyan); }
-    .footer-links .soon { color: var(--text-soft); opacity: 0.45; }
-    .license-line { font-family: var(--mono); font-size: 0.8rem; color: var(--lime); margin-top: 0.75rem; }
-    .copyright { font-family: var(--mono); font-size: 0.8rem; color: var(--text-soft); }
-    .disclaimer { font-family: var(--mono); font-size: 0.75rem; color: var(--text-soft); opacity: 0.7; margin-top: 1rem; max-width: 80ch; }
+  .star-rating input:checked ~ label,
+  .star-rating label:hover,
+  .star-rating label:hover ~ label {
+    color: var(--accent-color);
+  }
 
-    /* Reveal (only when JS is active) */
-    .js .reveal {
-      opacity: 0; transform: translateY(32px); filter: blur(6px);
-      transition: opacity 0.9s cubic-bezier(.2,.7,.2,1), transform 0.9s cubic-bezier(.2,.7,.2,1), filter 0.9s ease;
-    }
-    .js .reveal.visible { opacity: 1; transform: none; filter: none; }
+  /* --- BUTTONS --- */
+  .btn {
+    background-color: var(--text-color);
+    color: var(--bg-color);
+    border: none;
+    width: 100%;
+    max-width: 400px;
+    padding: 24px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.1s ease, background-color 0.2s ease, color 0.2s ease;
+  }
 
-    /* Responsive */
-    @media (max-width: 860px) {
-      .nav-toggle { display: block; }
-      .nav-links {
-        position: fixed; top: 76px; left: 0; right: 0; flex-direction: column; gap: 0;
-        background: rgba(5,6,10,0.96); backdrop-filter: blur(16px);
-        border-bottom: 1px solid var(--line); max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
-      }
-      .nav-links.open { max-height: 520px; }
-      .nav-links li a { display: block; padding: 1.1rem 1.5rem; border-top: 1px solid var(--line); }
-      .nav-links li a::after { display: none; }
-      .nav-cta { margin: 1rem 1.5rem; display: inline-flex; border-top: none !important; }
-      .hero { min-height: auto; padding-top: 8rem; }
-      .core-wrap { margin-top: 2rem; }
-    }
+  .btn:active {
+    transform: scale(0.98);
+  }
 
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      *, *::before, *::after { animation: none !important; transition: none !important; }
-      .js .reveal { opacity: 1; transform: none; filter: none; }
-      #neural { display: none; }
-    }
-  </style>
+  .btn:hover {
+    background-color: #E0E0E0;
+  }
+
+  .btn:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* --- SUCCESS PAGE & ANIMATION --- */
+  .success-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    overflow-y: auto;
+    padding: 4vh 0;
+  }
+
+  .checkmark {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 4;
+    stroke: var(--text-color);
+    stroke-miterlimit: 10;
+    margin: 0 auto 2vh auto;
+    box-shadow: inset 0px 0px 0px var(--bg-color);
+    animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+  }
+
+  .checkmark__circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 4;
+    stroke-miterlimit: 10;
+    stroke: var(--text-color);
+    fill: none;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+  }
+
+  .checkmark__check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+  }
+
+  @keyframes stroke {
+    100% { stroke-dashoffset: 0; }
+  }
+  @keyframes scale {
+    0%, 100% { transform: none; }
+    50% { transform: scale3d(1.1, 1.1, 1); }
+  }
+  @keyframes fill {
+    100% { box-shadow: inset 0px 0px 0px 60px var(--text-color); }
+  }
+
+  .checkmark.filled .checkmark__check {
+    stroke: var(--bg-color);
+  }
+
+  .certificate-preview {
+    max-width: 100%;
+    max-height: 40vh;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    margin: 2vh 0 4vh 0;
+    display: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+
+  .success-title {
+    font-size: 2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 1vh;
+  }
+
+  .success-subtitle {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+  }
+</style>
 </head>
 <body>
 
-  <canvas id="neural" aria-hidden="true"></canvas>
-  <div class="grid-overlay" aria-hidden="true"></div>
-  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
-  <div class="scroll-progress" id="progress" aria-hidden="true"></div>
+  <!-- GLOBAL TOP NOTICE -->
+  <div class="global-notice" id="globalNotice">ALL INFORMATIONS ARE USED FOR CERTIFICATE VERIFICATION</div>
 
-  <header class="site-header" id="header">
-    <nav class="container nav" aria-label="Main navigation">
-      <a href="#top" class="logo"><span class="logo-mark" aria-hidden="true"></span>DELANCE<span class="ai">.AI</span></a>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
-        <span></span><span></span><span></span>
-      </button>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="#problem">The problem</a></li>
-        <li><a href="#vision">Vision</a></li>
-        <li><a href="#creators">Creators</a></li>
-        <li><a href="#open-source">Open source</a></li>
-        <li><a href="#collaboration">Collaboration</a></li>
-        <li><a href="#ownership">Ownership</a></li>
-        <li><a href="#contact" class="btn btn-primary nav-cta">Join the community</a></li>
-      </ul>
-    </nav>
-  </header>
+  <!-- PAGE 1: AUTHENTICATION -->
+  <section class="step" id="page1">
+    <div class="step-header">
+      <h1>Dv.Haresh<br>Foundation</h1>
+    </div>
 
-  <main id="top">
-
-    <!-- HERO -->
-    <section class="hero" id="hero">
-      <div class="container hero-grid">
-        <div>
-          <div class="status-pill reveal">
-            <span class="pulse"></span>OPEN-SOURCE PLATFORM
-            <span class="pill-sep">·</span>DELEGATE FREELANCING
-            <span class="pill-sep">·</span>CONCEPT STAGE
-          </div>
-          <h1 class="reveal">Don't just freelance.<br>Build your own <span class="gradient-text">AI workforce.</span></h1>
-          <p class="hero-tagline reveal">Your expertise. Amplified by AI.</p>
-          <p class="lead reveal">Your expertise is valuable. Your time is limited.</p>
-          <p class="reveal">DELANCE.AI is an open-source platform for independent professionals to package their expertise into reusable AI capabilities, delegate execution to AI agents, and collaborate with other specialists to take on bigger projects.</p>
-          <p class="strong reveal" style="margin-top: 1.5rem;">Keep your creative edge. Expand what you can deliver.</p>
-          <div class="btn-group reveal">
-            <a href="#contact" class="btn btn-primary">Join the community</a>
-            <a href="#vision" class="btn">Explore the vision</a>
-          </div>
-          <div class="repo-chip reveal">
-            <span class="dot">●</span> <strong>github.com/delance-ai</strong> <span>· coming soon</span>
-          </div>
-          <p class="hero-note reveal">Currently in the concept stage. We're looking to connect with early creators, developers, and businesses who want to build this in the open.</p>
-        </div>
-
-        <div class="core-wrap reveal" aria-hidden="true">
-          <div class="orbit o3"></div>
-          <div class="orbit o1"></div>
-          <div class="orbit o2"></div>
-          <div class="core"></div>
-          <span class="core-label l1">Expertise</span>
-          <span class="core-label l2">AI execution</span>
-          <span class="core-label l3">Open collaboration</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- MARQUEE -->
-    <div class="marquee" aria-hidden="true">
-      <div class="marquee-track">
-        <span>Package expertise</span><span>Delegate execution</span><span>Collaborate without boundaries</span><span>Build in the open</span><span>Build on what you create</span>
-        <span>Package expertise</span><span>Delegate execution</span><span>Collaborate without boundaries</span><span>Build in the open</span><span>Build on what you create</span>
+    <div class="form-content">
+      <div class="input-group">
+        <label for="uniqueId">Unique Code</label>
+        <input type="password" id="uniqueId" autocomplete="off">
+        <div id="codeError" class="error-msg">INVALID CODE</div>
       </div>
     </div>
 
-    <!-- PROBLEM -->
-    <section id="problem">
-      <div class="container split">
-        <div class="reveal">
-          <span class="eyebrow">The problem</span>
-          <h2>Your expertise shouldn't be limited by your hours.</h2>
-          <p>Traditional freelancing ties much of your earning capacity to the time you personally spend completing work.</p>
-          <p>General-purpose AI can accelerate execution, but getting consistent results that reflect a professional's unique methods, judgment, and standards can require significant guidance.</p>
-          <p>And when projects grow, working alone can become a bottleneck.</p>
-        </div>
-        <div class="glass pull-quote reveal">
-          <span class="accent">We believe there's another way.</span>
-          <p>A future where professionals can turn their working methods into reusable capabilities, delegate repeatable tasks, and collaborate without losing what makes their work distinctive, on infrastructure anyone can inspect, extend, and improve.</p>
-        </div>
-      </div>
-    </section>
+    <button class="btn" onclick="validatePage1()">Proceed</button>
+  </section>
 
-    <!-- VISION -->
-    <section id="vision">
-      <div class="container">
-        <div class="section-head">
-          <span class="eyebrow reveal">Our vision</span>
-          <h2 class="reveal">Human expertise. <span class="gradient-text">AI execution.</span></h2>
-          <p class="lead reveal">DELANCE.AI is exploring an open platform that puts professionals at the centre of AI-powered work.</p>
-        </div>
-
-        <div class="grid">
-          <article class="spot reveal">
-            <span class="num">01</span>
-            <h3>Package your expertise</h3>
-            <p>Turn your methods, workflows, examples, tools, and quality standards into reusable AI capabilities that others can read, fork, and build on.</p>
-          </article>
-          <article class="spot reveal">
-            <span class="num">02</span>
-            <h3>Delegate execution</h3>
-            <p>Use AI agents to carry out defined tasks under your direction, freeing you to focus on judgment, creativity, and decisions that need human expertise.</p>
-          </article>
-          <article class="spot reveal">
-            <span class="num">03</span>
-            <h3>Collaborate without boundaries</h3>
-            <p>Bring together designers, developers, writers, and other specialists. Combine complementary capabilities to work on larger projects as a team.</p>
-          </article>
-          <article class="spot reveal">
-            <span class="num">04</span>
-            <h3>Build on what you create</h3>
-            <p>Explore ways to license capabilities, manage permissions, protect intellectual property, and agree on how revenue is shared.</p>
-          </article>
-        </div>
-        <p class="planned-note reveal">// These are planned directions for DELANCE.AI, not currently available product features.</p>
-      </div>
-    </section>
-
-    <!-- AUDIENCES -->
-    <section id="creators">
-      <div class="container audience-grid">
-        <div class="glass panel creators reveal">
-          <span class="tag">For creators</span>
-          <h2>Your way of working is part of your value.</h2>
-          <p>You bring more than a skill. You bring a way of thinking, creating, solving problems, and deciding what good work looks like.</p>
-          <p>DELANCE.AI aims to help professionals translate that expertise into reusable AI-powered workflows.</p>
-          <ul class="checklist">
-            <li>Develop capabilities that reflect your methods and standards.</li>
-            <li>Delegate repetitive execution while retaining creative and professional oversight.</li>
-            <li>Collaborate with specialists whose capabilities complement yours.</li>
-            <li>Explore new ways to monetize expertise and reusable capabilities.</li>
-          </ul>
-          <p class="closing">Create your own way of working. Scale it on your terms.</p>
-        </div>
-
-        <div class="glass panel businesses reveal" id="businesses">
-          <span class="tag">For businesses</span>
-          <h2>Find the expertise. Combine the capabilities.</h2>
-          <p>Businesses need more than output. They need work that meets their requirements, follows their standards, and solves real problems.</p>
-          <p>DELANCE.AI envisions a system where businesses can work with specialist creators and combine their expertise with AI-powered execution.</p>
-          <ul class="checklist">
-            <li>Access specialised approaches to defined tasks.</li>
-            <li>Combine complementary capabilities across a project.</li>
-            <li>Establish clear deliverables and quality expectations.</li>
-            <li>Work with human experts who remain accountable for their contributions.</li>
-          </ul>
-          <p class="closing">More coordinated expertise. A different model for getting work done.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- OPEN SOURCE -->
-    <section id="open-source">
-      <div class="container">
-        <div class="section-head">
-          <span class="eyebrow reveal">Open-source platform</span>
-          <h2 class="reveal">Built in the open. <span class="gradient-text">Owned by its community.</span></h2>
-          <p class="lead reveal">DELANCE.AI is being designed as an open-source platform, so the infrastructure behind AI-powered freelancing can be inspected, extended, and shaped by the people who use it.</p>
-        </div>
-
-        <div class="oss-grid">
-          <article class="oss-card reveal">
-            <span class="code">// transparent</span>
-            <h3>Inspectable core</h3>
-            <p>The platform's code, capability formats, and agent workflows are meant to be readable, so creators and businesses can verify how their work is handled.</p>
-          </article>
-          <article class="oss-card reveal">
-            <span class="code">// extensible</span>
-            <h3>Community capabilities</h3>
-            <p>An open format for packaging methods and tools lets developers and specialists publish, remix, and improve reusable capabilities together.</p>
-          </article>
-          <article class="oss-card reveal">
-            <span class="code">// self-directed</span>
-            <h3>Contributor-led roadmap</h3>
-            <p>Direction is shaped in public. Developers, designers, and creators can propose features, review decisions, and help set priorities.</p>
-          </article>
-        </div>
-
-        <div class="terminal reveal" aria-hidden="true">
-          <div class="terminal-bar"><i></i><i></i><i></i></div>
-          <pre><span class="comment"># planned workflow, not yet available</span>
-<span class="prompt">$</span> git clone <span class="hl">https://github.com/delance-ai/delance</span>
-<span class="prompt">$</span> delance capability init <span class="hl">--name "brand-voice-editor"</span>
-<span class="prompt">$</span> delance capability publish <span class="hl">--license MIT</span>
-<span class="comment"># contributors fork, remix, and credit the original author</span></pre>
-        </div>
-
-        <p class="planned-note center reveal">Open-source licensing, repository structure, and contribution guidelines are planned and will be published with the first public release.</p>
-      </div>
-    </section>
-
-    <!-- COLLABORATION -->
-    <section id="collaboration">
-      <div class="container">
-        <div class="collab-stage glass reveal">
-          <span class="eyebrow">Collaboration</span>
-          <h2>Independent experts. <span class="gradient-text">One coordinated team.</span></h2>
-          <div class="collab-visual" aria-hidden="true">
-            <span class="node">A designer's visual language</span>
-            <span class="op">+</span>
-            <span class="node">A developer's methodology</span>
-            <span class="op">+</span>
-            <span class="node">A writer's editorial approach</span>
-            <span class="op">=</span>
-            <span class="node result">Something none would make alone</span>
-          </div>
-          <div class="collab-copy">
-            <p>A designer has a distinctive visual language. A developer has an engineering methodology. A writer has an editorial approach.</p>
-            <p>Together, they can deliver something none of them would produce alone.</p>
-            <p>DELANCE.AI aims to make these collaborations easier by allowing professionals to contribute specialised capabilities while defining their own participation, permissions, and commercial terms.</p>
-            <p>The vision is a collaborative workforce in which people and AI agents work together, and independent creators can participate in larger projects without giving up control of their own contributions.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- OWNERSHIP -->
-    <section id="ownership">
-      <div class="container">
-        <div class="section-head">
-          <span class="eyebrow reveal">Ownership and trust</span>
-          <h2 class="reveal">Collaboration shouldn't mean giving everything away.</h2>
-          <p class="lead reveal">Your expertise is an asset. How it is shared matters. We're exploring a model built around:</p>
-        </div>
-        <div class="principles">
-          <div class="principle reveal"><span class="idx">01</span><h3>Creator control</h3><p>Clear permissions governing how capabilities can be used.</p></div>
-          <div class="principle reveal"><span class="idx">02</span><h3>Intellectual property</h3><p>Defined ownership and licensing terms for contributions, including open-source licenses where appropriate.</p></div>
-          <div class="principle reveal"><span class="idx">03</span><h3>Transparent collaboration</h3><p>Agreed responsibilities and revenue-sharing arrangements.</p></div>
-          <div class="principle reveal"><span class="idx">04</span><h3>Human oversight</h3><p>Professionals retain appropriate control over consequential work and quality.</p></div>
-        </div>
-        <p class="planned-note center reveal">These principles will need to be supported by clear policies and technical safeguards as the platform develops.</p>
-      </div>
-    </section>
-
-    <!-- STATUS / JOIN -->
-    <section id="status">
-      <div class="container split">
-        <div class="reveal">
-          <div class="status-tag"><span class="pulse"></span>STATUS: CONCEPT STAGE · OPEN-SOURCE PLATFORM</div>
-          <h2>We're building toward a <span class="gradient-text">different future of work.</span></h2>
-          <p>DELANCE.AI is currently at the concept stage. We're shaping the product vision, exploring the technical architecture, and looking for people who want to help define how AI-powered freelancing should work, in public.</p>
-          <p class="strong">Help shape DELANCE.AI from the beginning.</p>
-          <p>You don't need to wait for a finished platform to share a useful perspective or open your first issue.</p>
-        </div>
-        <div class="reveal">
-          <p class="strong" style="margin-bottom: 0.25rem;">We're interested in hearing from:</p>
-          <ul class="join-list">
-            <li>Freelancers and independent professionals.</li>
-            <li>AI and software developers.</li>
-            <li>UI/UX designers and creative specialists.</li>
-            <li>Businesses interested in AI-enabled workflows.</li>
-            <li>Potential collaborators and open-source contributors.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- FINAL CTA -->
-    <section id="contact" class="final">
-      <div class="container">
-        <div class="section-head reveal">
-          <span class="eyebrow">Final call</span>
-          <h2>The future of freelancing should <span class="gradient-text">amplify human expertise.</span></h2>
-          <p>We're exploring a world where professionals can build reusable capabilities, delegate execution, and collaborate to accomplish more, on an open platform.</p>
-          <p class="strong">If that future interests you, let's start a conversation.</p>
-        </div>
-        <div class="btn-group reveal">
-          <a href="mailto:hello@delance.ai" class="btn btn-primary">Join the community</a>
-          <span class="btn" aria-disabled="true">Star us on GitHub · coming soon</span>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <footer>
-    <div class="container">
-      <div class="footer-top">
-        <div>
-          <a href="#top" class="logo"><span class="logo-mark" aria-hidden="true"></span>DELANCE<span class="ai">.AI</span></a>
-          <p>Delegate Freelancing</p>
-          <p style="font-style: italic;">Human expertise. AI execution. Open collaboration.</p>
-          <p class="license-line">Open-source platform · license to be announced</p>
-        </div>
-        <ul class="footer-links">
-          <li><a href="#open-source">Open source</a></li>
-          <li><a href="#vision">Vision</a></li>
-          <li><span class="soon">GitHub (coming soon)</span></li>
-          <li><span class="soon">Community</span></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </div>
-      <p class="copyright">&copy; <span id="year">2026</span> DELANCE.AI. All rights reserved.</p>
-      <p class="disclaimer">DELANCE.AI is an independent open-source project in the concept stage. Product capabilities and open-source plans described on this page represent the intended direction and may change as the project develops.</p>
+  <!-- PAGE 2: DETAILS -->
+  <section class="step" id="page2">
+    <div class="step-header">
+      <div class="step-indicator">01 / 02</div>
+      <h1>Identity</h1>
     </div>
-  </footer>
 
-  <script>
-    (function () {
-      document.documentElement.classList.remove('no-js');
-      document.documentElement.classList.add('js');
+    <div class="form-content">
+      <div class="input-group">
+        <label for="fullName">Full Name *</label>
+        <input type="text" id="fullName" required>
+      </div>
+      <div class="input-group">
+        <label for="collegeName">Institution / College *</label>
+        <input type="text" id="collegeName" required>
+      </div>
+      <div class="input-group">
+        <label for="phoneNumber">Phone Number *</label>
+        <input type="tel" id="phoneNumber" required>
+      </div>
+      <div class="input-group">
+        <label for="emailId">Email Address *</label>
+        <input type="email" id="emailId" required>
+      </div>
+      <div id="detailsError" class="error-msg">ALL FIELDS ARE MANDATORY</div>
+    </div>
 
-      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    <button class="btn" onclick="validatePage2()">Continue</button>
+  </section>
 
-      /* Header state and scroll progress */
-      const header = document.getElementById('header');
-      const progress = document.getElementById('progress');
-      const onScroll = () => {
-        const y = window.scrollY;
-        header.classList.toggle('scrolled', y > 20);
-        const max = document.documentElement.scrollHeight - window.innerHeight;
-        progress.style.transform = `scaleX(${max > 0 ? y / max : 0})`;
-      };
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
+  <!-- PAGE 3: REVIEW & SUBMIT -->
+  <section class="step" id="page3">
+    <div class="step-header">
+      <div class="step-indicator">02 / 02</div>
+      <h1>Review</h1>
+    </div>
 
-      /* Mobile menu */
-      const toggle = document.getElementById('navToggle');
-      const navLinks = document.getElementById('navLinks');
-      const setMenu = (open) => {
-        toggle.classList.toggle('open', open);
-        navLinks.classList.toggle('open', open);
-        toggle.setAttribute('aria-expanded', String(open));
-      };
-      toggle.addEventListener('click', () => setMenu(!navLinks.classList.contains('open')));
-      navLinks.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
-      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
+    <div class="form-content">
+      <div class="input-group">
+        <label>Experience Rating *</label>
+        <div class="star-rating">
+          <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+          <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+          <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+          <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+          <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="feedback">Feedback *</label>
+        <textarea id="feedback" rows="3" required></textarea>
+      </div>
+      <div id="reviewError" class="error-msg">PLEASE PROVIDE RATING AND FEEDBACK</div>
+    </div>
 
-      /* Reveal on scroll */
-      const reveals = document.querySelectorAll('.reveal');
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            io.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-      reveals.forEach((el, i) => {
-        el.style.transitionDelay = `${(i % 3) * 0.08}s`;
-        io.observe(el);
+    <button class="btn" id="submitBtn" onclick="submitForm()">SUBMIT</button>
+  </section>
+
+  <!-- SUCCESS PAGE (PREVIEW & DOWNLOAD) -->
+  <section class="step" id="pageSuccess">
+    <div class="success-container">
+      <svg class="checkmark filled" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+        <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+        <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+      </svg>
+      <div class="success-title">RECORDED</div>
+      <div class="success-subtitle" id="successMsg">Here is your certificate</div>
+
+      <!-- The Base64 image gets injected here -->
+      <img id="certificateImage" class="certificate-preview" alt="Generated Certificate">
+
+      <!-- The download link for the image -->
+      <a id="downloadBtn" class="btn" style="display: none;">Save Certificate</a>
+    </div>
+  </section>
+
+<script>
+  // UPDATE THIS URL TO YOUR VERCEL DOMAIN WHEN GOING LIVE
+  const ENGINE_URL = "https://your-vercel-project.vercel.app/api/generate";
+  const GOOGLE_FORM_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSc0GM8OxRgI2bAZOHEfPJcI7Sn_fXOIZuhCxSdPIyhdhPSbQw/formResponse";
+
+  // CHECK SESSION STORAGE ON LOAD
+  window.onload = () => {
+    if (sessionStorage.getItem('certificate_submitted') === 'true') {
+      document.getElementById('globalNotice').style.opacity = '0';
+      document.getElementById('successMsg').innerText = "Submission already recorded.";
+      document.getElementById('pageSuccess').classList.add('active');
+    } else {
+      document.getElementById('page1').classList.add('active');
+    }
+  };
+
+  function goToStep(stepId) {
+    document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+    document.getElementById(stepId).classList.add('active');
+
+    if(stepId === 'pageSuccess') {
+      document.getElementById('globalNotice').style.opacity = '0';
+    }
+  }
+
+  // Page 1
+  function validatePage1() {
+    const codeInput = document.getElementById('uniqueId').value.trim().toUpperCase();
+    const errorMsg = document.getElementById('codeError');
+
+    if (codeInput === 'ELC WEBINAR' || codeInput === 'ELCWEBINAR') {
+      errorMsg.style.display = 'none';
+      goToStep('page2');
+    } else {
+      errorMsg.style.display = 'block';
+    }
+  }
+
+  // Page 2
+  function validatePage2() {
+    const name = document.getElementById('fullName').value.trim();
+    const college = document.getElementById('collegeName').value.trim();
+    const phone = document.getElementById('phoneNumber').value.trim();
+    const email = document.getElementById('emailId').value.trim();
+    const errorMsg = document.getElementById('detailsError');
+
+    if (name && college && phone && email) {
+      errorMsg.style.display = 'none';
+      goToStep('page3');
+    } else {
+      errorMsg.style.display = 'block';
+    }
+  }
+
+  // Page 3 & Submission
+  async function submitForm() {
+    const ratingInput = document.querySelector('input[name="rating"]:checked');
+    const feedback = document.getElementById('feedback').value.trim();
+    const errorMsg = document.getElementById('reviewError');
+    const submitBtn = document.getElementById('submitBtn');
+
+    if (!ratingInput || !feedback) {
+      errorMsg.style.display = 'block';
+      return;
+    }
+
+    errorMsg.style.display = 'none';
+    submitBtn.textContent = "PROCESSING...";
+    submitBtn.disabled = true;
+
+    // 1. Gather Data for Certificate Engine (JSON)
+    const studentData = {
+      fullName: document.getElementById('fullName').value.trim(),
+      collegeName: document.getElementById('collegeName').value.trim(),
+      phoneNumber: document.getElementById('phoneNumber').value.trim(),
+      emailId: document.getElementById('emailId').value.trim(),
+      rating: ratingInput.value,
+      feedback: feedback
+    };
+
+    // 2. Gather Data for Google Forms (FormData)
+    const googleFormData = new FormData();
+    googleFormData.append("entry.1066356620", "ELC WEBINAR");
+    googleFormData.append("entry.1872723866", studentData.fullName);
+    googleFormData.append("entry.1168967077", studentData.collegeName);
+    googleFormData.append("entry.1110252065", studentData.phoneNumber);
+    googleFormData.append("entry.1710093823", studentData.emailId);
+    googleFormData.append("entry.1653897863", studentData.rating);
+    googleFormData.append("entry.896679269", studentData.feedback);
+
+    try {
+      // Fire Google Forms request silently in the background
+      fetch(GOOGLE_FORM_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: googleFormData
+      }).catch(err => console.error("Google Forms Sync Failed:", err));
+
+      // Await Vercel Certificate Engine Request
+      const response = await fetch(ENGINE_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(studentData)
       });
 
-      /* Active nav link */
-      const navAnchors = navLinks.querySelectorAll('a[href^="#"]:not(.nav-cta)');
-      const sectionIO = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          navAnchors.forEach((a) => {
-            a.classList.toggle('active', a.getAttribute('href') === `#${entry.target.id}`);
-          });
-        });
-      }, { rootMargin: '-45% 0px -50% 0px' });
-      document.querySelectorAll('main section[id]').forEach((s) => sectionIO.observe(s));
+      const data = await response.json();
 
-      /* Spotlight cards */
-      document.querySelectorAll('.spot, .principle, .oss-card').forEach((card) => {
-        card.addEventListener('pointermove', (e) => {
-          const r = card.getBoundingClientRect();
-          card.style.setProperty('--mx', `${e.clientX - r.left}px`);
-          card.style.setProperty('--my', `${e.clientY - r.top}px`);
-        });
-      });
-
-      /* Cursor glow */
-      const glow = document.getElementById('cursorGlow');
-      if (!reduceMotion && window.matchMedia('(pointer: fine)').matches) {
-        window.addEventListener('pointermove', (e) => {
-          glow.style.left = `${e.clientX}px`;
-          glow.style.top = `${e.clientY}px`;
-          glow.style.opacity = '1';
-        }, { passive: true });
-        document.addEventListener('pointerleave', () => { glow.style.opacity = '0'; });
-      } else {
-        glow.style.display = 'none';
+      if (!response.ok || !data.success) {
+        throw new Error("Server responded with an error.");
       }
 
-      /* Neural particle network */
-      const canvas = document.getElementById('neural');
-      if (canvas && !reduceMotion) {
-        const ctx = canvas.getContext('2d');
-        let w, h, dpr, nodes = [], frame;
-        const mouse = { x: -9999, y: -9999 };
-        const LINK = 150;
+      // Display the certificate in the UI
+      const certImg = document.getElementById('certificateImage');
+      const downloadBtn = document.getElementById('downloadBtn');
 
-        const resize = () => {
-          dpr = Math.min(window.devicePixelRatio || 1, 2);
-          w = canvas.clientWidth;
-          h = canvas.clientHeight;
-          canvas.width = w * dpr;
-          canvas.height = h * dpr;
-          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-          const count = Math.min(90, Math.floor((w * h) / 16000));
-          nodes = Array.from({ length: count }, () => ({
-            x: Math.random() * w,
-            y: Math.random() * h,
-            vx: (Math.random() - 0.5) * 0.35,
-            vy: (Math.random() - 0.5) * 0.35,
-            r: Math.random() * 1.6 + 0.6,
-            c: Math.random() < 0.5 ? '34,211,238' : '139,92,246'
-          }));
-        };
+      certImg.src = data.image; // Apply Base64 image
+      certImg.style.display = 'block';
 
-        window.addEventListener('resize', resize);
-        window.addEventListener('pointermove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; }, { passive: true });
-        resize();
+      downloadBtn.href = data.image; // Attach Base64 to download link
+      downloadBtn.download = `${data.code}.png`; // Name the file HF-PC-XXXX.png
+      downloadBtn.style.display = 'block';
 
-        const draw = () => {
-          ctx.clearRect(0, 0, w, h);
-          for (const n of nodes) {
-            n.x += n.vx;
-            n.y += n.vy;
-            if (n.x < 0 || n.x > w) n.vx *= -1;
-            if (n.y < 0 || n.y > h) n.vy *= -1;
-            const dx = n.x - mouse.x, dy = n.y - mouse.y;
-            const d = Math.hypot(dx, dy);
-            if (d < 180) {
-              n.x += (dx / d) * 0.6;
-              n.y += (dy / d) * 0.6;
-            }
-          }
-          for (let i = 0; i < nodes.length; i++) {
-            for (let j = i + 1; j < nodes.length; j++) {
-              const a = nodes[i], b = nodes[j];
-              const dist = Math.hypot(a.x - b.x, a.y - b.y);
-              if (dist < LINK) {
-                ctx.strokeStyle = `rgba(139,92,246,${(1 - dist / LINK) * 0.22})`;
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(a.x, a.y);
-                ctx.lineTo(b.x, b.y);
-                ctx.stroke();
-              }
-            }
-          }
-          for (const n of nodes) {
-            ctx.beginPath();
-            ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(${n.c},0.85)`;
-            ctx.fill();
-          }
-          frame = requestAnimationFrame(draw);
-        };
+      // Lock form and transition to success page
+      sessionStorage.setItem('certificate_submitted', 'true');
+      goToStep('pageSuccess');
 
-        document.addEventListener('visibilitychange', () => {
-          if (document.hidden) cancelAnimationFrame(frame);
-          else frame = requestAnimationFrame(draw);
-        });
-        frame = requestAnimationFrame(draw);
-      }
-
-      /* Footer year */
-      document.getElementById('year').textContent = new Date().getFullYear();
-    })();
-  </script>
+    } catch (error) {
+      console.error("Submission failed:", error);
+      submitBtn.textContent = "SUBMIT";
+      submitBtn.disabled = false;
+      alert("Network Error. Please ensure the Certificate Engine is running.");
+    }
+  }
+</script>
 </body>
 </html>
